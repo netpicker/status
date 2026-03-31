@@ -1,7 +1,9 @@
 {
   "services": [
     { "name": "Flock9", "url": "https://flock9.io/", "file": "flock9-io" },
-    { "name": "Netpicker", "url": "https://netpicker.io/", "file": "netpicker-io" }
+    { "name": "Netpicker", "url": "https://netpicker.io/", "file": "netpicker-io" },
+    { "name": "Netpicker Dev", "url": "https://dev.netpicker.io/", "file": "dev-netpicker-io" },
+    { "name": "Netpicker Sandbox", "url": "https://sandbox.netpicker.io/", "file": "sandbox-netpicker-io" }
   ],
   "historyDays": 90
 }
