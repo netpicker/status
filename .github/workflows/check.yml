@@ -1,0 +1,75 @@
+name: Check Services
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: status-check
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check services and update data
+        run: |
+          mkdir -p data
+
+          for row in $(jq -c '.services[]' config.json); do
+            name=$(echo "$row" | jq -r '.name')
+            url=$(echo "$row" | jq -r '.url')
+            file=$(echo "$row" | jq -r '.file')
+            datafile="data/${file}.json"
+
+            # Initialize file if missing
+            if [ ! -f "$datafile" ]; then
+              echo '[]' > "$datafile"
+            fi
+
+            # Curl the service
+            start=$(date +%s%3N)
+            http_code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$url" || echo "000")
+            end=$(date +%s%3N)
+            duration=$((end - start))
+            timestamp=$(date +%s)
+
+            if [ "$http_code" -ge 200 ] && [ "$http_code" -lt 400 ]; then
+              ok=true
+            else
+              ok=false
+            fi
+
+            echo "[$name] $url → $http_code (${duration}ms) ok=$ok"
+
+            # Append entry
+            jq --argjson t "$timestamp" \
+               --argjson s "$http_code" \
+               --argjson d "$duration" \
+               --argjson ok "$ok" \
+               '. += [{"t": $t, "s": $s, "d": $d, "ok": $ok}]' \
+               "$datafile" > tmp.json && mv tmp.json "$datafile"
+
+            # Prune entries older than 90 days
+            cutoff=$(( timestamp - 90 * 86400 ))
+            jq --argjson cutoff "$cutoff" '[.[] | select(.t >= $cutoff)]' \
+               "$datafile" > tmp.json && mv tmp.json "$datafile"
+          done
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update status data"
+            git push
+          fi

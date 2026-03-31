@@ -1,0 +1,7 @@
+{
+  "services": [
+    { "name": "Flock9", "url": "https://flock9.io/", "file": "flock9-io" },
+    { "name": "Netpicker", "url": "https://netpicker.io/", "file": "netpicker-io" }
+  ],
+  "historyDays": 90
+}
