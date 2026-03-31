@@ -22,7 +22,7 @@ jobs:
         run: |
           mkdir -p data
 
-          for row in $(jq -c '.services[]' config.json); do
+          while IFS= read -r row; do
             name=$(echo "$row" | jq -r '.name')
             url=$(echo "$row" | jq -r '.url')
             file=$(echo "$row" | jq -r '.file')
@@ -60,7 +60,7 @@ jobs:
             cutoff=$(( timestamp - 90 * 86400 ))
             jq --argjson cutoff "$cutoff" '[.[] | select(.t >= $cutoff)]' \
                "$datafile" > tmp.json && mv tmp.json "$datafile"
-          done
+          done < <(jq -c '.services[]' config.json)
 
       - name: Commit and push
         run: |
