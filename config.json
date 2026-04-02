@@ -1,9 +1,12 @@
 {
   "services": [
-    { "name": "Flock9", "url": "https://flock9.io/", "file": "flock9-io" },
-    { "name": "Netpicker", "url": "https://netpicker.io/", "file": "netpicker-io" },
-    { "name": "Netpicker Dev", "url": "https://dev.netpicker.io/", "file": "dev-netpicker-io" },
-    { "name": "Netpicker Sandbox", "url": "https://sandbox.netpicker.io/", "file": "sandbox-netpicker-io" }
+    { "name": "https://flock9.io/", "url": "https://flock9.io/", "file": "flock9-io" },
+    { "name": "https://netpicker.io/", "url": "https://netpicker.io/", "file": "netpicker-io" },
+    { "name": "https://dev.netpicker.io/", "url": "https://dev.netpicker.io/", "file": "dev-netpicker-io" },
+    { "name": "https://sandbox.netpicker.io/", "url": "https://sandbox.netpicker.io/", "file": "sandbox-netpicker-io" },
+    { "name": "https://slurpit.io/", "url": "https://slurpit.io/", "file": "slurpit-io" },
+    { "name": "https://sandbox.slurpit.io/", "url": "https://sandbox.slurpit.io/", "file": "sandbox-slurpit-io" },
+    { "name": "https://netbox.slurpit.io:8443/", "url": "https://netbox.slurpit.io:8443/", "file": "netbox-slurpit-io-8443" }
   ],
   "historyDays": 90
 }

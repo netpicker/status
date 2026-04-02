@@ -1,218 +1,256 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Status</title>
-<style>
-  :root {
-    --bg: #fff;
-    --bg-card: #f9fafb;
-    --text: #111827;
-    --text-secondary: #6b7280;
-    --border: #e5e7eb;
-    --green: #22c55e;
-    --yellow: #eab308;
-    --red: #ef4444;
-    --gray: #d1d5db;
-    --banner-ok: #22c55e;
-    --banner-partial: #eab308;
-    --banner-major: #ef4444;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #0f172a;
-      --bg-card: #1e293b;
-      --text: #f1f5f9;
-      --text-secondary: #94a3b8;
-      --border: #334155;
-      --gray: #475569;
-      --banner-ok: #16a34a;
-      --banner-partial: #ca8a04;
-      --banner-major: #dc2626;
-    }
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.5;
-    padding: 2rem 1rem;
-    max-width: 720px;
-    margin: 0 auto;
-  }
-  h1 { font-size: 1.5rem; margin-bottom: 1.5rem; }
-  .banner {
-    padding: 1rem 1.25rem;
-    border-radius: 0.5rem;
-    color: #fff;
-    font-weight: 600;
-    font-size: 1rem;
-    margin-bottom: 2rem;
-  }
-  .banner.ok { background: var(--banner-ok); }
-  .banner.partial { background: var(--banner-partial); }
-  .banner.major { background: var(--banner-major); }
-  .service {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 0.5rem;
-    padding: 1.25rem;
-    margin-bottom: 1rem;
-  }
-  .service-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.75rem;
-  }
-  .service-name {
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    display: inline-block;
-  }
-  .dot.up { background: var(--green); }
-  .dot.down { background: var(--red); }
-  .dot.unknown { background: var(--gray); }
-  .service-meta {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    text-align: right;
-  }
-  .bars {
-    display: flex;
-    gap: 1px;
-    align-items: flex-end;
-    height: 32px;
-  }
-  .bar {
-    flex: 1;
-    height: 100%;
-    border-radius: 2px;
-    position: relative;
-    cursor: pointer;
-    min-width: 2px;
-  }
-  .bar.green { background: var(--green); }
-  .bar.yellow { background: var(--yellow); }
-  .bar.red { background: var(--red); }
-  .bar.gray { background: var(--gray); opacity: 0.4; }
-  .tooltip {
-    display: none;
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--text);
-    color: var(--bg);
-    font-size: 0.7rem;
-    padding: 4px 8px;
-    border-radius: 4px;
-    white-space: nowrap;
-    z-index: 10;
-    pointer-events: none;
-  }
-  .bar:hover .tooltip { display: block; }
-  .bar-labels {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.7rem;
-    color: var(--text-secondary);
-    margin-top: 4px;
-  }
-  .uptime-pct {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-  }
-  footer {
-    text-align: center;
-    margin-top: 2rem;
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-  }
-</style>
-</head>
-<body>
-<h1>Status</h1>
-<div id="banner" class="banner" style="display:none"></div>
-<div id="services"></div>
-<footer>Checked every 2 hours</footer>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flock9 Status</title>
+    <style>
+      :root {
+        --bg: #fff;
+        --bg-card: #f9fafb;
+        --text: #111827;
+        --text-secondary: #6b7280;
+        --border: #e5e7eb;
+        --green: #22c55e;
+        --yellow: #eab308;
+        --red: #ef4444;
+        --gray: #d1d5db;
+        --banner-ok: #22c55e;
+        --banner-partial: #eab308;
+        --banner-major: #ef4444;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0f172a;
+          --bg-card: #1e293b;
+          --text: #f1f5f9;
+          --text-secondary: #94a3b8;
+          --border: #334155;
+          --gray: #475569;
+          --banner-ok: #16a34a;
+          --banner-partial: #ca8a04;
+          --banner-major: #dc2626;
+        }
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.5;
+        padding: 2rem 1rem;
+        max-width: 720px;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .banner {
+        padding: 1rem 1.25rem;
+        border-radius: 0.5rem;
+        color: #fff;
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 2rem;
+      }
+      .banner.ok {
+        background: var(--banner-ok);
+      }
+      .banner.partial {
+        background: var(--banner-partial);
+      }
+      .banner.major {
+        background: var(--banner-major);
+      }
+      .service {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        padding: 1.25rem;
+        margin-bottom: 1rem;
+      }
+      .service-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+      }
+      .service-name {
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+      .dot.up {
+        background: var(--green);
+      }
+      .dot.down {
+        background: var(--red);
+      }
+      .dot.unknown {
+        background: var(--gray);
+      }
+      .service-meta {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        text-align: right;
+      }
+      .bars {
+        display: flex;
+        gap: 1px;
+        align-items: flex-end;
+        height: 32px;
+      }
+      .bar {
+        flex: 1;
+        height: 100%;
+        border-radius: 2px;
+        position: relative;
+        cursor: pointer;
+        min-width: 2px;
+      }
+      .bar.green {
+        background: var(--green);
+      }
+      .bar.yellow {
+        background: var(--yellow);
+      }
+      .bar.red {
+        background: var(--red);
+      }
+      .bar.gray {
+        background: var(--gray);
+        opacity: 0.4;
+      }
+      .tooltip {
+        display: none;
+        position: absolute;
+        bottom: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--text);
+        color: var(--bg);
+        font-size: 0.7rem;
+        padding: 4px 8px;
+        border-radius: 4px;
+        white-space: nowrap;
+        z-index: 10;
+        pointer-events: none;
+      }
+      .bar:hover .tooltip {
+        display: block;
+      }
+      .bar-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.7rem;
+        color: var(--text-secondary);
+        margin-top: 4px;
+      }
+      .uptime-pct {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+      }
+      footer {
+        text-align: center;
+        margin-top: 2rem;
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Status</h1>
+    <div id="banner" class="banner" style="display: none"></div>
+    <div id="services"></div>
+    <footer>Checked every 2 hours</footer>
 
-<script>
-(async () => {
-  const bust = `?t=${Date.now()}`;
-  const config = await fetch(`config.json${bust}`).then(r => r.json());
-  const historyDays = config.historyDays || 90;
-  const container = document.getElementById('services');
-  const bannerEl = document.getElementById('banner');
+    <script>
+      (async () => {
+        const bust = `?t=${Date.now()}`;
+        const config = await fetch(`config.json${bust}`).then((r) => r.json());
+        const historyDays = config.historyDays || 90;
+        const container = document.getElementById("services");
+        const bannerEl = document.getElementById("banner");
 
-  let allOk = true;
-  let anyData = false;
+        let allOk = true;
+        let anyData = false;
 
-  for (const svc of config.services) {
-    let checks = [];
-    try {
-      checks = await fetch(`data/${svc.file}.json${bust}`).then(r => r.json());
-      if (checks.length) anyData = true;
-    } catch {}
+        for (const svc of config.services) {
+          let checks = [];
+          try {
+            checks = await fetch(`data/${svc.file}.json${bust}`).then((r) =>
+              r.json(),
+            );
+            if (checks.length) anyData = true;
+          } catch {}
 
-    // Current status from last check
-    const last = checks.length ? checks[checks.length - 1] : null;
-    const isUp = last ? last.ok : null;
-    if (last && !last.ok) allOk = false;
+          // Current status from last check
+          const last = checks.length ? checks[checks.length - 1] : null;
+          const isUp = last ? last.ok : null;
+          if (last && !last.ok) allOk = false;
 
-    // Group by day (UTC)
-    const dayMap = {};
-    for (const c of checks) {
-      const d = new Date(c.t * 1000);
-      const key = `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}-${String(d.getUTCDate()).padStart(2,'0')}`;
-      if (!dayMap[key]) dayMap[key] = [];
-      dayMap[key].push(c);
-    }
+          // Group by day (UTC)
+          const dayMap = {};
+          for (const c of checks) {
+            const d = new Date(c.t * 1000);
+            const key = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}`;
+            if (!dayMap[key]) dayMap[key] = [];
+            dayMap[key].push(c);
+          }
 
-    // Build array of last N days
-    const today = new Date();
-    const days = [];
-    for (let i = historyDays - 1; i >= 0; i--) {
-      const d = new Date(today);
-      d.setUTCDate(d.getUTCDate() - i);
-      const key = `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}-${String(d.getUTCDate()).padStart(2,'0')}`;
-      const entries = dayMap[key] || [];
-      const total = entries.length;
-      const okCount = entries.filter(e => e.ok).length;
-      const ratio = total > 0 ? okCount / total : null;
-      days.push({ date: key, ratio, total });
-    }
+          // Build array of last N days
+          const today = new Date();
+          const days = [];
+          for (let i = historyDays - 1; i >= 0; i--) {
+            const d = new Date(today);
+            d.setUTCDate(d.getUTCDate() - i);
+            const key = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}`;
+            const entries = dayMap[key] || [];
+            const total = entries.length;
+            const okCount = entries.filter((e) => e.ok).length;
+            const ratio = total > 0 ? okCount / total : null;
+            days.push({ date: key, ratio, total });
+          }
 
-    // Overall uptime %
-    const totalChecks = checks.length;
-    const okChecks = checks.filter(c => c.ok).length;
-    const uptimePct = totalChecks > 0 ? ((okChecks / totalChecks) * 100).toFixed(2) : '—';
+          // Overall uptime %
+          const totalChecks = checks.length;
+          const okChecks = checks.filter((c) => c.ok).length;
+          const uptimePct =
+            totalChecks > 0 ? ((okChecks / totalChecks) * 100).toFixed(2) : "—";
 
-    // Response time
-    const responseTime = last ? `${last.d}ms` : '—';
-    const lastCheckTime = last ? new Date(last.t * 1000).toLocaleString() : 'Never';
+          // Response time
+          const responseTime = last ? `${last.d}ms` : "—";
+          const lastCheckTime = last
+            ? new Date(last.t * 1000).toLocaleString()
+            : "Never";
 
-    // Build HTML
-    const div = document.createElement('div');
-    div.className = 'service';
+          // Build HTML
+          const div = document.createElement("div");
+          div.className = "service";
 
-    const statusClass = isUp === true ? 'up' : isUp === false ? 'down' : 'unknown';
-    const statusLabel = isUp === true ? 'Operational' : isUp === false ? 'Down' : 'Unknown';
+          const statusClass =
+            isUp === true ? "up" : isUp === false ? "down" : "unknown";
+          const statusLabel =
+            isUp === true ? "Operational" : isUp === false ? "Down" : "Unknown";
 
-    div.innerHTML = `
+          div.innerHTML = `
       <div class="service-header">
         <div class="service-name">
           <span class="dot ${statusClass}"></span>
-          ${svc.name}
+          <a href="${svc.url}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${svc.name}</a>
           <span class="uptime-pct">${uptimePct}%</span>
         </div>
         <div class="service-meta">
@@ -220,40 +258,43 @@
         </div>
       </div>
       <div class="bars">
-        ${days.map(d => {
-          let cls = 'gray';
-          if (d.ratio !== null) {
-            if (d.ratio >= 1) cls = 'green';
-            else if (d.ratio > 0.95) cls = 'yellow';
-            else cls = 'red';
-          }
-          const pct = d.ratio !== null ? (d.ratio * 100).toFixed(1) + '%' : 'No data';
-          return `<div class="bar ${cls}"><div class="tooltip">${d.date}<br>${pct}${d.total ? ' (' + d.total + ' checks)' : ''}</div></div>`;
-        }).join('')}
+        ${days
+          .map((d) => {
+            let cls = "gray";
+            if (d.ratio !== null) {
+              if (d.ratio >= 1) cls = "green";
+              else if (d.ratio > 0.95) cls = "yellow";
+              else cls = "red";
+            }
+            const pct =
+              d.ratio !== null ? (d.ratio * 100).toFixed(1) + "%" : "No data";
+            return `<div class="bar ${cls}"><div class="tooltip">${d.date}<br>${pct}${d.total ? " (" + d.total + " checks)" : ""}</div></div>`;
+          })
+          .join("")}
       </div>
       <div class="bar-labels">
-        <span>${days[0]?.date || ''}</span>
+        <span>${days[0]?.date || ""}</span>
         <span>Today</span>
       </div>
     `;
-    container.appendChild(div);
-  }
+          container.appendChild(div);
+        }
 
-  // Banner
-  bannerEl.style.display = 'block';
-  if (!anyData) {
-    bannerEl.textContent = 'No data yet — waiting for first check';
-    bannerEl.className = 'banner partial';
-  } else if (allOk) {
-    bannerEl.textContent = 'All Systems Operational';
-    bannerEl.className = 'banner ok';
-  } else {
-    // Check if all are down
-    const allDown = config.services.length > 0 && !allOk;
-    bannerEl.textContent = 'Partial Outage';
-    bannerEl.className = 'banner partial';
-  }
-})();
-</script>
-</body>
+        // Banner
+        bannerEl.style.display = "block";
+        if (!anyData) {
+          bannerEl.textContent = "No data yet — waiting for first check";
+          bannerEl.className = "banner partial";
+        } else if (allOk) {
+          bannerEl.textContent = "All Systems Operational";
+          bannerEl.className = "banner ok";
+        } else {
+          // Check if all are down
+          const allDown = config.services.length > 0 && !allOk;
+          bannerEl.textContent = "Partial Outage";
+          bannerEl.className = "banner partial";
+        }
+      })();
+    </script>
+  </body>
 </html>
